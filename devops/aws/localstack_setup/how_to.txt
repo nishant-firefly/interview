@@ -1,0 +1,8 @@
+>> Install Docker Desktop 
+    https://docs.docker.com/desktop/install/windows-install/ 
+>> 
+ docker run --rm -it -p 4566-4599:4566-4599 -p 8080:8080 localstack/localstack
+
+>>
+http://localhost:8080/ in your web browser. This dashboard provides information about the AWS services 
+running in LocalStack and allows you to configure settings.

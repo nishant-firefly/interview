@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4566-4599:4566-4599"  # Expose ports for AWS services
+      - "8080:8080"  # Expose port for LocalStack dashboard
+    environment:
+      - SERVICES=s3,dynamodb  # Specify AWS services to start (add more services as needed)
+      - DEBUG=1  # Enable debug mode for LocalStack
+    volumes:
+      - localstack_data:/var/lib/localstack  # Volume for data persistence
+
+volumes:
+  localstack_data:
+    driver: local

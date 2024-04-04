@@ -1,4 +1,4 @@
-def is_anagram(word1, word2):
+def is_anagram_inefficient(word1, word2):
     """
     Check if two words or phrases are anagrams of each other.
     
@@ -21,6 +21,41 @@ def is_anagram(word1, word2):
 
     # Total Time Complexity: O(n log n)
 
+
+def is_anagram(str1, str2):
+    # Convert strings to lowercase for case-insensitive comparison
+    str1 = str1.lower() # o(n)
+    str2 = str2.lower() # o(n)   => 2xo(n)
+
+    # If lengths are different, they can't be anagrams
+    if len(str1) != len(str2):
+        return False
+
+    # Create dictionaries to store character counts
+    count_str1 = {}
+    count_str2 = {}
+
+    # Count occurrences of characters in str1 - O(n)
+    for char in str1: # 3xo(n)
+        count_str1[char] = count_str1.get(char, 0) + 1
+
+    # Count occurrences of characters in str2 - O(n)
+    for char in str2: # 4xo(n)
+        count_str2[char] = count_str2.get(char, 0) + 1
+
+    # Compare the dictionaries - O(n)
+    return count_str1 == count_str2
+    # Total time complexity: O(n)
+
+
+# Test the function
+print(is_anagram('listen', 'silent'))  # Output: True
+print(is_anagram('hello', 'world'))    # Output: False
+
+
+# Test the function
+print(is_anagram('listen', 'silent'))  # Output: True
+print(is_anagram('hello', 'world'))    # Output: False
 if __name__=="__main__":
     word1 = "Listen"
     word2 = "Silent"

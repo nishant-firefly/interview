@@ -30,3 +30,9 @@ for fruit in fruits:
 # Example of input and output:
 name = input("Enter your name: ")
 print(f"Hello, {name}!")
+# This is a basic overview to get you started with Python. Let me know if you want to dive deeper into any specific topic or if you have any questions!
+
+
+
+
+

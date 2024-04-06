@@ -1,0 +1,2 @@
+# Strong understanding of information retrieval concepts, ranking algorithms, and relevance tuning.
+

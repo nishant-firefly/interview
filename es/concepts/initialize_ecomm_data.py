@@ -1,49 +1,5 @@
-from elasticsearch import Elasticsearch
-
-# Elasticsearch client
-es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
-
-# Define the schema (mapping)
-mapping = {
-    "mappings": {
-        "properties": {
-            "product_id": {"type": "keyword"},
-            "name": {"type": "text"},
-            "description": {"type": "text"},
-            "price": {"type": "float"},
-            "categories": {
-                "type": "nested",
-                "properties": {
-                    "category_id": {"type": "keyword"},
-                    "category_name": {"type": "keyword"}
-                }
-            },
-            "attributes": {
-                "type": "nested",
-                "properties": {
-                    "attribute_name": {"type": "keyword"},
-                    "attribute_value": {"type": "keyword"}
-                }
-            },
-            "reviews": {
-                "type": "nested",
-                "properties": {
-                    "review_id": {"type": "keyword"},
-                    "user_id": {"type": "keyword"},
-                    "rating": {"type": "integer"},
-                    "comment": {"type": "text"},
-                    "timestamp": {"type": "date"}
-                }
-            }
-        }
-    }
-}
-
-# Create the index with the defined mapping
-index_name = "ecommerce"
-es.indices.create(index=index_name, body=mapping)
-
-
+from connection import ES, ECOMMERCE_INDEX
+es=ES()
 # Sample data records for indexing
 data_records = [
     {
@@ -238,7 +194,7 @@ data_records = [
 # Bulk indexing of data records
 bulk_data = []
 for record in data_records:
-    bulk_data.append({"index": {"_index": index_name, "_id": record["product_id"]}})
+    bulk_data.append({"index": {"_index": ECOMMERCE_INDEX, "_id": record["product_id"]}})
     bulk_data.append(record)
 
 # Perform bulk indexing

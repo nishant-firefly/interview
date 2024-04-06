@@ -79,8 +79,8 @@ Dynamic Mapping: Use dynamic mapping for unstructured or evolving data, quick pr
 # Create index and mapping
 import sys
 sys.path.insert(0, '..')
-from connection import ES
-index_name = "ecommerce"
+from connection import ES, ECOMMERCE_INDEX
+
 mapping = {
     "mappings": {
         "properties": {
@@ -109,19 +109,41 @@ mapping = {
                     "user_id": {"type": "keyword"},
                     "rating": {"type": "integer"},
                     "comment": {"type": "text"},
-                    "timestamp": {"type": "date", "format": "yyyy-MM-dd'T'HH:mm:ssZ"}
+                    "timestamp": {"type": "date","format": "strict_date_optional_time"}
                 }
             }
         }
     }
 }
 
-# Create index with mapping
-es=ES()
-breakpoint()
-if not es.indices.exists(index=index_name):
-    es.indices.create(index=index_name, body=mapping)
-    print(f"Mapping created for index '{index_name}'.")
-else:
-        print(f"The index '{index_name}' already exist.")
+def create_index_mapping():
+    # Create index with mapping
+    es=ES()
+    if not es.indices.exists(index=ECOMMERCE_INDEX):
+        es.indices.create(index=ECOMMERCE_INDEX, body=mapping)
+        print(f"Mapping created for index '{ECOMMERCE_INDEX}'.")
+    else:
+            print(f"The index '{ECOMMERCE_INDEX}' already exist.")
 
+def delete_index():
+    es =ES()
+    if es.indices.exists(index=ECOMMERCE_INDEX):
+        # Delete the index
+        es.indices.delete(index=ECOMMERCE_INDEX)
+        print(f"The index '{ECOMMERCE_INDEX}' has been deleted.")
+    else:
+        print(f"The index '{ECOMMERCE_INDEX}' does not exist in Elasticsearch.")
+
+from enum import Enum
+
+class IndexAction(Enum):
+    CREATE = 'create'
+    DELETE = 'delete'
+
+if len(sys.argv)<2 or sys.argv[1] not in [e.value  for e in IndexAction]:
+     print(f" pass one of {[e.value  for e in IndexAction]} as sys arg ")     
+elif sys.argv[1] ==IndexAction.CREATE.value:
+    create_index_mapping()
+elif sys.argv[1]==IndexAction.DELETE.value:
+    delete_index()
+     

@@ -1,4 +1,5 @@
 from elasticsearch import Elasticsearch
+ECOMMERCE_INDEX="ecommerce"
 class ES:
     def __new__(self,username=None, password=None, port_host="http://localhost:9200" ):
         # 

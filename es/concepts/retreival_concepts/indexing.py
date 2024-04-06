@@ -79,7 +79,7 @@ Dynamic Mapping: Use dynamic mapping for unstructured or evolving data, quick pr
 # Create index and mapping
 import sys
 sys.path.insert(0, '..')
-from connection import es
+from connection import ES
 index_name = "ecommerce"
 mapping = {
     "mappings": {
@@ -116,9 +116,12 @@ mapping = {
     }
 }
 
-breakpoint()
 # Create index with mapping
-es.indices.create(index=index_name, body=mapping)
-
-print(f"Mapping created for index '{index_name}'.")
+es=ES()
+breakpoint()
+if not es.indices.exists(index=index_name):
+    es.indices.create(index=index_name, body=mapping)
+    print(f"Mapping created for index '{index_name}'.")
+else:
+        print(f"The index '{index_name}' already exist.")
 

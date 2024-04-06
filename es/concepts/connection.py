@@ -20,5 +20,4 @@ def get_connection(username=None, password=None, port_host="http://localhost:920
         print("Failed to connect to Elasticsearch. Please check your connection settings.")
     return es
 
-if __name__=="__main__":
-    es = get_connection()
+es = get_connection()

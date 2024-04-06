@@ -22,5 +22,6 @@ class ES:
         except exceptions.ConnectionError:
             print("Failed to connect to Elasticsearch. Please check your connection settings.")
         return es
+    
 if __name__=="__main__":
     es = ES()

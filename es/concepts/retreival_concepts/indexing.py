@@ -79,7 +79,7 @@ Dynamic Mapping: Use dynamic mapping for unstructured or evolving data, quick pr
 # Create index and mapping
 import sys
 sys.path.insert(0, '..')
-from connection import ES, ECOMMERCE_INDEX
+from es_wrapper import ES, ECOMMERCE_INDEX
 
 mapping = {
     "mappings": {

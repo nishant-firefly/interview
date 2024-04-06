@@ -1,18 +1,25 @@
+
+#####################################################
+cd es
 docker-compose up # to set up ELK using docker  
 
 # Delete all containers 
 docker rm -vf $(docker ps -aq)
-
 # Delete all volumes
 docker rmi -f $(docker images -aq)
 
-
 # Prune (Remove all unused containers, volumes, networks and images)
 docker system prune -a --volumes
-
 # Docker provides a single command that will clean up any resources — images, containers, volumes, and networks — that are dangling (not associated with a container):
 docker system prune
-
 #To additionally remove any stopped containers and all unused images (not just dangling images), add the -a flag to the command:
 docker system prune -a
+#####################################################
+-------- Create / Delete Index. 
+cd es/concepts/retreival_concepts
+python indexing.py delete 
+python indexing.py create 
 
+-------- Initialze data 
+cd es/concepts
+python initialize_ecomm_data.py 

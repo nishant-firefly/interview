@@ -1,4 +1,4 @@
-from connection import ES, ECOMMERCE_INDEX
+from es_wrapper import ES, ECOMMERCE_INDEX
 es=ES()
 # Sample data records for indexing
 data_records = [
@@ -200,4 +200,5 @@ for record in data_records:
 # Perform bulk indexing
 es.bulk(body=bulk_data)
 
-print("Schema defined and data indexed successfully.")
+print("*** Even if rerun it will be same number of records, no duplicate *** \n \
+      Schema defined and data indexed successfully.")

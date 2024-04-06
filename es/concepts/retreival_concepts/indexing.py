@@ -116,6 +116,7 @@ mapping = {
     }
 }
 
+breakpoint()
 # Create index with mapping
 es.indices.create(index=index_name, body=mapping)
 

@@ -23,3 +23,6 @@ python indexing.py create
 -------- Initialze data 
 cd es/concepts
 python initialize_ecomm_data.py 
+
+#################
+git > repo honme >> insights (on left menu will see commit )

@@ -96,29 +96,19 @@ class ESWrapper:
 
     def format_query(self, *args, **kwargs):
         """
-        Perform an Elasticsearch query using the provided parameters and format the response for readability.
-        Parameters:
-        - *args: Positional arguments for creating the Elasticsearch query
-        - **kwargs: Keyword arguments for additional options
-        Returns:
-        - Formatted Elasticsearch query result
+        Format the Elasticsearch query result for better readability.
         """
-        # Call generic_query method to perform the Elasticsearch query
-        query_result = self.generic_query(*args, **kwargs)
-
-        # Format the response for better readability
+        result = self.generic_query(*args, **kwargs)
         formatted_result = {
-            "aggr": query_result.get("aggregations", {}),
-            "highlight": query_result.get("highlight", {}),
-            "result": query_result.get("hits", {}).get("hits", []),
+            "aggr": result.get("aggregations"),
+            "highlight": result.get("highlight"),
+            "result": [hit.get("_source") for hit in result.get("hits").get("hits")],
             "pagination": {
-                "from": query_result.get("from", 0),
-                "size": query_result.get("size", 10),
-                "total": query_result.get("hits", {}).get("total", {}).get("value", 0)
+                "from": result.get("from"),
+                "size": result.get("size"),
+                "total": result.get("hits").get("total").get("value"),
             }
-            # Add more keys as needed for other response elements
         }
-
         return formatted_result
 
 

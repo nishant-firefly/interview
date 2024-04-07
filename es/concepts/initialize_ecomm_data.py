@@ -190,15 +190,15 @@ data_records = [
         ]
     }
 ]
-
+if __name__=="__main__":
 # Bulk indexing of data records
-bulk_data = []
-for record in data_records:
-    bulk_data.append({"index": {"_index": ECOMMERCE_INDEX, "_id": record["product_id"]}})
-    bulk_data.append(record)
+    bulk_data = []
+    for record in data_records:
+        bulk_data.append({"index": {"_index": ECOMMERCE_INDEX, "_id": record["product_id"]}})
+        bulk_data.append(record)
 
-# Perform bulk indexing
-es.bulk(body=bulk_data)
+    # Perform bulk indexing
+    es.bulk(body=bulk_data)
 
-print("*** Even if rerun it will be same number of records, no duplicate *** \n \
-      Schema defined and data indexed successfully.")
+    print("*** Even if rerun it will be same number of records, no duplicate *** \n \
+        Schema defined and data indexed successfully.")

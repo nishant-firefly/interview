@@ -25,4 +25,5 @@ cd es/concepts
 python initialize_ecomm_data.py 
 
 #################
-git > repo honme >> insights (on left menu will see commit )
+Code main above file can click and see commit, commits ka timer hai click that for 
+    https://github.com/nishant-firefly/interview/commits/main/

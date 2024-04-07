@@ -22,6 +22,31 @@ class ES:
         except exceptions.ConnectionError:
             print("Failed to connect to Elasticsearch. Please check your connection settings.")
         return es
+
+
+
+class ESWrapper:
+    def __init__(self, es, default_index=ECOMMERCE_INDEX) -> None:
+        self.es=es
+        self.index = ECOMMERCE_INDEX 
+    def search(self, k_v):
+        # Simple Match Query
+        # e.g  k_v= {"name": "product"}
+        query = {"query": {"match": k_v}}
+        result = self.es.search(index=self.index, body=query)
+        return [hit["_source"] for hit in result['hits']['hits']]
+        breakpoint()
+        self.es.search()
+
+        # Execute the Match Query
+        
+
+        # Print the matched documents
+        print("Matched Documents:")
+        for hit in result['hits']['hits']:
+            print(hit['_source'])
     
 if __name__=="__main__":
-    es = ES()
+    esw = ESWrapper(ES())
+    smart_phone_x= [{'product_id': 'P001', 'name': 'Smartphone X', 'description': 'A high-performance smartphone with advanced features.', 'price': 999.99, 'categories': [{'category_id': 'C001', 'category_name': 'Electronics'}, {'category_id': 'C002', 'category_name': 'Mobile Phones'}], 'attributes': [{'attribute_name': 'Brand', 'attribute_value': 'XCorp'}, {'attribute_name': 'Color', 'attribute_value': 'Black'}, {'attribute_name': 'RAM', 'attribute_value': '8GB'}, {'attribute_name': 'Storage', 'attribute_value': '128GB'}], 'reviews': [{'review_id': 'R001', 'user_id': 'U001', 'rating': 4, 'comment': 'Great phone!', 'timestamp': '2023-04-15T12:00:00Z'}, {'review_id': 'R002', 'user_id': 'U002', 'rating': 5, 'comment': 'Amazing features.', 'timestamp': '2023-04-16T09:30:00Z'}]}]
+    assert(esw.search({"name":"Smartphone X"})==smart_phone_x)

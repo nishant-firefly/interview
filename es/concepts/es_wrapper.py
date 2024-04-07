@@ -29,7 +29,6 @@ class ESWrapper:
     def set_index(self, index_to_be_set):
         self.index = index_to_be_set
 
- 
     def generic_query(self, queries, aggregations=None, highlights=None, from_=0, size=10, sort=None, script_fields=None, boost_mode=None):
         """
         Perform a generic Elasticsearch query with advanced options.
@@ -95,7 +94,34 @@ class ESWrapper:
             query[query_type].update(options)
         return query
 
-esw = ESWrapper(ES())
+    def format_query(self, *args, **kwargs):
+        """
+        Perform an Elasticsearch query using the provided parameters and format the response for readability.
+        Parameters:
+        - *args: Positional arguments for creating the Elasticsearch query
+        - **kwargs: Keyword arguments for additional options
+        Returns:
+        - Formatted Elasticsearch query result
+        """
+        # Call generic_query method to perform the Elasticsearch query
+        query_result = self.generic_query(*args, **kwargs)
+
+        # Format the response for better readability
+        formatted_result = {
+            "aggr": query_result.get("aggregations", {}),
+            "highlight": query_result.get("highlight", {}),
+            "result": query_result.get("hits", {}).get("hits", []),
+            "pagination": {
+                "from": query_result.get("from", 0),
+                "size": query_result.get("size", 10),
+                "total": query_result.get("hits", {}).get("total", {}).get("value", 0)
+            }
+            # Add more keys as needed for other response elements
+        }
+
+        return formatted_result
+
+
 
 if __name__ == "__main__":
     esw = ESWrapper(ES())
@@ -103,42 +129,42 @@ if __name__ == "__main__":
     print("Example 1: Simple Match Query for a Specific Category")
     category_match_query = esw.create_query("match", "categories.category_name", "Electronics")
     print("Category Match Query:", category_match_query)
-    category_result = esw.generic_query([category_match_query])
+    category_result = esw.format_query([category_match_query])
     print("Category Result:", category_result)
     print()
 
     print("Example 2: Match Query with Fuzziness and Minimum Should Match")
     fuzzy_min_should_match_query = esw.create_query("match", "description", "compact", {"fuzziness": "AUTO", "minimum_should_match": "75%"})
     print("Fuzzy Match Query with Minimum Should Match:", fuzzy_min_should_match_query)
-    fuzzy_min_should_match_result = esw.generic_query([fuzzy_min_should_match_query])
+    fuzzy_min_should_match_result = esw.format_query([fuzzy_min_should_match_query])
     print("Fuzzy Match Result:", fuzzy_min_should_match_result)
     print()
 
     print("Example 3: Match Query with Wildcard")
     wildcard_query = esw.create_query("wildcard", "name.keyword", "S*")
     print("Wildcard Match Query:", wildcard_query)
-    wildcard_result = esw.generic_query([wildcard_query])
+    wildcard_result = esw.format_query([wildcard_query])
     print("Wildcard Match Result:", wildcard_result)
     print()
 
     print("Example 4: Match Query with Prefix")
     prefix_query = esw.create_query("prefix", "name", "Smart")
     print("Prefix Match Query:", prefix_query)
-    prefix_result = esw.generic_query([prefix_query])
+    prefix_result = esw.format_query([prefix_query])
     print("Prefix Match Result:", prefix_result)
     print()
 
     print("Example 5: Match Query with Range")
     range_query = esw.create_query("range", "price", {"gte": 1000, "lte": 2000})
     print("Range Match Query:", range_query)
-    range_result = esw.generic_query([range_query])
+    range_result = esw.format_query([range_query])
     print("Range Match Result:", range_result)
     print()
 
     print("Example 6: Match Query with Exists Condition")
     exists_query = esw.create_query("exists", "attributes.Color", None)
     print("Exists Match Query:", exists_query)
-    exists_result = esw.generic_query([exists_query])
+    exists_result = esw.format_query([exists_query])
     print("Exists Match Result:", exists_result)
     print()
 
@@ -149,14 +175,14 @@ if __name__ == "__main__":
     ]
     print("Bool Match Query:", bool_query)
 
-    bool_result = esw.generic_query(bool_query)
+    bool_result = esw.format_query(bool_query)
     print("Bool Match Result:", bool_result)
     print()
 
     print("Example 8: Match Query with Fuzziness and Minimum Should Match for Multiple Fields")
     multi_field_query = esw.create_query("match", ["name", "description"], "smartphone", {"fuzziness": "AUTO", "minimum_should_match": "75%"})
     print("Multi-field Match Query with Minimum Should Match:", multi_field_query)
-    multi_field_result = esw.generic_query([multi_field_query])
+    multi_field_result = esw.format_query([multi_field_query])
     print("Multi-field Match Result:", multi_field_result)
     print()
 
@@ -164,7 +190,7 @@ if __name__ == "__main__":
     boosted_query = esw.create_query("bool", "should", {"match": {"name": {"query": "smartphone", "boost": 2}}})
 
     print("Boosted Query:", boosted_query)
-    boosted_result = esw.generic_query([boosted_query])
+    boosted_result = esw.format_query([boosted_query])
     print("Result:", boosted_result)
     print()
 
@@ -177,7 +203,7 @@ if __name__ == "__main__":
         }
     }
     print("Multi-Match Query:", multi_match_query)
-    multi_match_result = esw.generic_query([multi_match_query])
+    multi_match_result = esw.format_query([multi_match_query])
     print("Multi-Match Result:", multi_match_result)
     print()
 
@@ -188,7 +214,7 @@ if __name__ == "__main__":
         esw.create_query("bool", "must_not", {"range": {"price": {"gte": 1000}}})
     ]
     print("Combined Query:", combined_query)
-    combined_result = esw.generic_query(combined_query)
+    combined_result = esw.format_query(combined_query)
     print("Combined Query Result:", combined_result)
     print()
 
@@ -202,7 +228,7 @@ if __name__ == "__main__":
     # Example 12: Match Query with Exists Condition and Must Not Range Condition
     exists_query = esw.create_query("bool", "must_not", {"range": {"price": {"gte": 1000, "lte": 2000}}})
     print("Exists Match Query with Must Not Range Condition:", exists_query)
-    exists_result = esw.generic_query([exists_query])
+    exists_result = esw.format_query([exists_query])
     print("Result:", exists_result)
     print()
 
@@ -213,7 +239,7 @@ if __name__ == "__main__":
         esw.create_query("prefix", "name", "S")
     ]
     print("Term and Prefix Query:", term_prefix_query)
-    term_prefix_result = esw.generic_query(term_prefix_query)
+    term_prefix_result = esw.format_query(term_prefix_query)
     print("Term and Prefix Result:", term_prefix_result)
     print()
 
@@ -224,7 +250,7 @@ if __name__ == "__main__":
         esw.create_query("range", "price", {"gte": 500, "lte": 1500})
     ]
     print("Wildcard and Range Query:", wildcard_range_query)
-    wildcard_range_result = esw.generic_query(wildcard_range_query)
+    wildcard_range_result = esw.format_query(wildcard_range_query)
     print("Wildcard and Range Result:", wildcard_range_result)
     print()
 
@@ -236,14 +262,14 @@ if __name__ == "__main__":
         esw.create_query("bool", "must_not", {"exists": {"field": "reviews"}})
     ]
     print("Fuzzy, Term, and Must Not Exists Query:", fuzzy_term_exists_query)
-    fuzzy_term_exists_result = esw.generic_query(fuzzy_term_exists_query)
+    fuzzy_term_exists_result = esw.format_query(fuzzy_term_exists_query)
     print("Fuzzy, Term, and Must Not Exists Result:", fuzzy_term_exists_result)
 
     print("Example 16: Match Query with Range and Boost")
     range_boost_query = esw.create_query("bool", "must", {"match": {"name": "smartphone"}})
     range_boost_query["bool"]["should"] = esw.create_query("range", "price", {"gte": 1000, "lte": 2000, "boost": 1.5})
     print("Range and Boost Query:", range_boost_query)
-    range_boost_result = esw.generic_query([range_boost_query])
+    range_boost_result = esw.format_query([range_boost_query])
     print("Range and Boost Result:", range_boost_result)
     print()
 
@@ -251,7 +277,7 @@ if __name__ == "__main__":
     print("Example 17: Match Phrase Query")
     match_phrase_query = esw.create_query("match_phrase", "description", "high-quality smartphone")
     print("Match Phrase Query:", match_phrase_query)
-    match_phrase_result = esw.generic_query([match_phrase_query])
+    match_phrase_result = esw.format_query([match_phrase_query])
     print("Match Phrase Result:", match_phrase_result)
     print()
 
@@ -265,7 +291,7 @@ if __name__ == "__main__":
     print("Combined Should Query with Minimum Should Match:", combined_should_query)
 
     # Perform the combined query
-    combined_should_result = esw.generic_query(combined_should_query)
+    combined_should_result = esw.format_query(combined_should_query)
     print("Combined Should Result:", combined_should_result)
     print()
 
@@ -274,7 +300,7 @@ if __name__ == "__main__":
     prefix_boost_query = esw.create_query("bool", "must", {"prefix": {"name": "smart"}})
     prefix_boost_query["bool"]["should"] = {"match": {"description": {"query": "features", "boost": 1.5}}}
     print("Prefix and Boost Query:", prefix_boost_query)
-    prefix_boost_result = esw.generic_query([prefix_boost_query])
+    prefix_boost_result = esw.format_query([prefix_boost_query])
     print("Prefix and Boost Result:", prefix_boost_result)
     print()
 
@@ -286,7 +312,7 @@ if __name__ == "__main__":
         esw.create_query("bool", "filter", {"range": {"price": {"lte": 1500}}})
     ]
     print("Fuzzy, Term, and Filter Query:", fuzzy_term_filter_query)
-    fuzzy_term_filter_result = esw.generic_query(fuzzy_term_filter_query)
+    fuzzy_term_filter_result = esw.format_query(fuzzy_term_filter_query)
     print("Fuzzy, Term, and Filter Result:", fuzzy_term_filter_result)
     print()
 
@@ -294,7 +320,7 @@ if __name__ == "__main__":
     print("Example 21: Match Query with Nested Fields and Aggregation")
     nested_query = {'nested': {'path': 'variants', 'query': {'match': {'variants.color': 'black'}}}}
     aggregation_body = {'brands_agg': {'terms': {'field': 'brand.keyword'}}}
-    nested_result = esw.generic_query([nested_query], aggregations=aggregation_body)
+    nested_result = esw.format_query([nested_query], aggregations=aggregation_body)
     print("Nested Query Result with Aggregation:", nested_result)
     print()
 
@@ -302,14 +328,14 @@ if __name__ == "__main__":
     print("Example 22: Match Query with Highlighting")
     match_highlight_query = esw.create_query("match", "description", "smartphone")
     highlight_body = {'fields': {'description': {}}}
-    match_highlight_result = esw.generic_query([match_highlight_query], highlights=highlight_body)
+    match_highlight_result = esw.format_query([match_highlight_query], highlights=highlight_body)
     print("Match Query Result with Highlighting:", match_highlight_result)
     print()
 
     # Example 23: Match Query with Pagination
     print("Example 23: Match Query with Pagination")
     match_pagination_query = esw.create_query("match", "name", "smartphone")
-    pagination_result = esw.generic_query([match_pagination_query], from_=0, size=5)
+    pagination_result = esw.format_query([match_pagination_query], from_=0, size=5)
     print("Pagination Result:", pagination_result)
     print()
 
@@ -318,14 +344,14 @@ if __name__ == "__main__":
     print("Example 24: Match All Query with Sort")
     match_all_sort_query = {"match_all": {}}
     sort_body = [{"price": {"order": "asc"}}]
-    match_all_sort_result = esw.generic_query([match_all_sort_query], sort=sort_body, from_=0, size=5)
+    match_all_sort_result = esw.format_query([match_all_sort_query], sort=sort_body, from_=0, size=5)
     print("Match All Query Result with Sort:", match_all_sort_result)
     print()
 
     # Example 25: Match Phrase Prefix Query
     print("Example 25: Match Phrase Prefix Query")
     match_phrase_prefix_query = esw.create_query("match_phrase_prefix", "name", "smart")
-    match_phrase_prefix_result = esw.generic_query([match_phrase_prefix_query])
+    match_phrase_prefix_result = esw.format_query([match_phrase_prefix_query])
     print("Match Phrase Prefix Query Result:", match_phrase_prefix_result)
     print()
 
@@ -334,7 +360,7 @@ if __name__ == "__main__":
     print("Example 26: Term Query with Aggregation")
     term_query = esw.create_query("term", "brand.keyword", "Samsung")
     term_aggregation_body = {"avg_price": {"avg": {"field": "price"}}}
-    term_result = esw.generic_query([term_query], aggregations=term_aggregation_body)
+    term_result = esw.format_query([term_query], aggregations=term_aggregation_body)
     print("Term Query Result with Aggregation:", term_result)
     print()
 
@@ -352,7 +378,7 @@ if __name__ == "__main__":
             }
         }
     }
-    bool_result = esw.generic_query(bool_query, aggregations=filter_aggregation_body)
+    bool_result = esw.format_query(bool_query, aggregations=filter_aggregation_body)
     print("Bool Query Result with Filter Aggregation:", bool_result)
     print()
 
@@ -366,7 +392,7 @@ if __name__ == "__main__":
         }
     }
     sort_body = {"price": {"order": "asc"}}
-    match_script_sort_result = esw.generic_query([match_query], script_fields=scripted_field_body, sort=sort_body)
+    match_script_sort_result = esw.format_query([match_query], script_fields=scripted_field_body, sort=sort_body)
     print("Match Query Result with Scripted Field and Sort:", match_script_sort_result)
     print()
 
@@ -374,7 +400,7 @@ if __name__ == "__main__":
     # Example 29: Match Query with Boost Mode
     print("Example 29: Match Query with Boost Mode")
     boost_mode_body = {"query": {"match": {"name": {"query": "smartphone features", "boost": 2}}}}
-    match_boost_result = esw.generic_query([boost_mode_body])
+    match_boost_result = esw.format_query([boost_mode_body])
     print("Match Query Result with Boost Mode:", match_boost_result)
     print()
 
@@ -382,7 +408,7 @@ if __name__ == "__main__":
     print("Example 30: Exists Query")
     exists_query = esw.create_query("exists", "reviews", True)
     print("Exists Query:", exists_query)
-    exists_result = esw.generic_query([exists_query])
+    exists_result = esw.format_query([exists_query])
     print("Exists Query Result:", exists_result)
     print()
 

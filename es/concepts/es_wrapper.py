@@ -242,3 +242,66 @@ if __name__ == "__main__":
     print("Fuzzy, Term, and Must Not Exists Result:", fuzzy_term_exists_result)
 
    
+    # Example 15: Match Query with Fuzzy, Term, and Must Not Exists
+    print("Example 15: Match Query with Fuzzy, Term, and Must Not Exists")
+    fuzzy_term_exists_query = [
+        esw.create_query("match", "name", "Smartphone", {"fuzziness": "AUTO"}),
+        esw.create_query("term", "attributes.Color", "Black"),
+        esw.create_query("bool", "must_not", {"exists": {"field": "reviews"}})
+    ]
+    print("Fuzzy, Term, and Must Not Exists Query:", fuzzy_term_exists_query)
+    fuzzy_term_exists_result = esw.generic_query(fuzzy_term_exists_query)
+    print("Fuzzy, Term, and Must Not Exists Result:", fuzzy_term_exists_result)
+
+    print("Example 16: Match Query with Range and Boost")
+    range_boost_query = esw.create_query("bool", "must", {"match": {"name": "smartphone"}})
+    range_boost_query["bool"]["should"] = esw.create_query("range", "price", {"gte": 1000, "lte": 2000, "boost": 1.5})
+    print("Range and Boost Query:", range_boost_query)
+    range_boost_result = esw.generic_query([range_boost_query])
+    print("Range and Boost Result:", range_boost_result)
+    print()
+
+
+    print("Example 17: Match Phrase Query")
+    match_phrase_query = esw.create_query("match_phrase", "description", "high-quality smartphone")
+    print("Match Phrase Query:", match_phrase_query)
+    match_phrase_result = esw.generic_query([match_phrase_query])
+    print("Match Phrase Result:", match_phrase_result)
+    print()
+
+
+
+    print("Example 18: Combined Query with Should and Minimum Should Match")
+    combined_should_query = [
+        esw.create_query("bool", "should", {"match": {"name": "Smartphone", "minimum_should_match": "75%"}}),
+        esw.create_query("bool", "should", {"match": {"attributes.Color": "Black"}})
+    ]
+    print("Combined Should Query with Minimum Should Match:", combined_should_query)
+
+    # Perform the combined query
+    combined_should_result = esw.generic_query(combined_should_query)
+    print("Combined Should Result:", combined_should_result)
+    print()
+
+
+    print("Example 19: Match Query with Prefix and Boost")
+    prefix_boost_query = esw.create_query("bool", "must", {"prefix": {"name": "smart"}})
+    prefix_boost_query["bool"]["should"] = {"match": {"description": {"query": "features", "boost": 1.5}}}
+    print("Prefix and Boost Query:", prefix_boost_query)
+    prefix_boost_result = esw.generic_query([prefix_boost_query])
+    print("Prefix and Boost Result:", prefix_boost_result)
+    print()
+
+
+    print("Example 20: Match Query with Fuzzy, Term, and Filter")
+    fuzzy_term_filter_query = [
+        esw.create_query("match", "name", "smartphone", {"fuzziness": "AUTO"}),
+        esw.create_query("term", "brand", "Samsung"),
+        esw.create_query("bool", "filter", {"range": {"price": {"lte": 1500}}})
+    ]
+    print("Fuzzy, Term, and Filter Query:", fuzzy_term_filter_query)
+    fuzzy_term_filter_result = esw.generic_query(fuzzy_term_filter_query)
+    print("Fuzzy, Term, and Filter Result:", fuzzy_term_filter_result)
+    print()
+
+

@@ -1,0 +1,2 @@
+Get started Video 
+https://cloud.elastic.co/deployments/805c8b21ae134d3c88d59d28050c6792/getting-started

@@ -54,7 +54,7 @@ class ESWrapper:
                 }
             },
             "from": from_,
-            "size": size
+            "size": size``
         }
 
         for query in queries:
@@ -89,6 +89,7 @@ class ESWrapper:
     def create_query(self, query_type, fields, value, options=None):
         if isinstance(fields, str):
             fields = [fields]  # Convert to list if a single field is provided
+        breakpoint()
         query = {query_type: {field: value for field in fields}}
         if options:
             query[query_type].update(options)

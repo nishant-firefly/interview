@@ -24,8 +24,8 @@ def is_anagram_inefficient(word1, word2):
 
 def is_anagram(str1, str2):
     # Convert strings to lowercase for case-insensitive comparison
-    str1 = str1.lower() # o(n)
-    str2 = str2.lower() # o(n)   => 2xo(n)
+    str1 = str1.lower() # O(n)
+    str2 = str2.lower() # O(n)   => 2xO(n)
 
     # If lengths are different, they can't be anagrams
     if len(str1) != len(str2):
@@ -36,11 +36,11 @@ def is_anagram(str1, str2):
     count_str2 = {}
 
     # Count occurrences of characters in str1 - O(n)
-    for char in str1: # 3xo(n)
+    for char in str1: # 3xO(n)
         count_str1[char] = count_str1.get(char, 0) + 1
 
     # Count occurrences of characters in str2 - O(n)
-    for char in str2: # 4xo(n)
+    for char in str2: # 4xO(n)
         count_str2[char] = count_str2.get(char, 0) + 1
 
     # Compare the dictionaries - O(n)
